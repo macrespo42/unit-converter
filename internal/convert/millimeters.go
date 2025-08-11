@@ -3,9 +3,10 @@ package convert
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
 
-func ToMilimeter(value float64, valueName string) (float64, error) {
+func toMilimeter(value float64, valueName string) (float64, error) {
 	if valueName == "millimeter" {
 		return value, nil
 	}
@@ -19,7 +20,7 @@ func ToMilimeter(value float64, valueName string) (float64, error) {
 	return value * convertKey, nil
 }
 
-func MilimeterTo(value float64, valueName string) (float64, error) {
+func milimeterTo(value float64, valueName string) (float64, error) {
 	if valueName == "millimeter" {
 		return value, nil
 	}
@@ -31,4 +32,23 @@ func MilimeterTo(value float64, valueName string) (float64, error) {
 	}
 
 	return value / convertKey, nil
+}
+
+func ConvertLength(rawValue string, from, to string) (float64, error) {
+	length, err := strconv.ParseFloat(rawValue, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	millimeter, err := toMilimeter(length, from)
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := milimeterTo(millimeter, to)
+	if err != nil {
+		return 0, err
+	}
+
+	return result, nil
 }

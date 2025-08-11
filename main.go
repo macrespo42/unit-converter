@@ -3,10 +3,16 @@ package main
 import (
 	"html/template"
 	"net/http"
-	"strconv"
 
 	"github.com/macrespo42/unit-converter/internal/convert"
 )
+
+type formResult struct {
+	Length string
+	From   string
+	To     string
+	Result float64
+}
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	t, err := template.ParseFiles("./templates/base.html", "./templates/length.html")
@@ -25,30 +31,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	length, err := strconv.ParseFloat(rawLength, 64)
+	result, err := convert.ConvertLength(rawLength, from, to)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	milimeters, err := convert.ToMilimeter(length, from)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	result, err := convert.MilimeterTo(milimeters, to)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	data := struct {
-		Length float64
-		From   string
-		To     string
-		Result float64
-	}{
-		Length: length,
+	data := formResult{
+		Length: rawLength,
 		From:   from,
 		To:     to,
 		Result: result,
