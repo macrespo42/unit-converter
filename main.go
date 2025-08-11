@@ -3,18 +3,18 @@ package main
 import (
 	"html/template"
 	"net/http"
-	"os"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./templates/length.html")
+	t, err := template.ParseFiles("./templates/base.html", "./templates/length.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	data := struct{ Name string }{Name: "John"}
 
-	err = t.Execute(os.Stdout, data)
+	w.Header().Add("Content-Type", "text/html")
+	err = t.Execute(w, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

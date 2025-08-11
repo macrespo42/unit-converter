@@ -1,6 +1,7 @@
+{{ define "content" }}
 <form target="_self">
-  <label for="length">Enter the weight to convert</label>
-  <input type="number" name="length" value="0" /> <br />
+  <label for="weight">Enter the weight to convert</label>
+  <input type="number" name="weight" value="0" /> <br />
 
   <label for="from">Unit to convert from</label>
   <select name="from" id="from">
@@ -26,3 +27,4 @@
 
   <input type="submit" name="submit" value="Convert" />
 </form>
+{{ end }}
