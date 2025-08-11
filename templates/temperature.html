@@ -1,0 +1,25 @@
+{{ define "content" }}
+<form target="_self">
+  <label for="length">Enter the temperature to convert</label>
+  <input type="number" name="length" value="0" /> <br />
+
+  <label for="from">Unit to convert from</label>
+  <select name="from" id="from">
+    <option value="celsius">celsius</option>
+    <option value="fahrenheit">fahrenheit</option>
+    <option value="kelvin">kelvin</option>
+  </select>
+
+  <label for="to">Unit to convert to</label>
+  <select name="to" id="to">
+    <option value="celsius">celsius</option>
+    <option value="fahrenheit">fahrenheit</option>
+    <option value="kelvin">kelvin</option>
+  </select>
+
+  <input type="submit" name="submit" value="Convert" />
+</form>
+{{ if .Length }}
+<hr />
+<p>{{ .Result }} {{ .To }}</p>
+{{end}} {{ end }}

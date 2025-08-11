@@ -14,36 +14,98 @@ type formResult struct {
 	Result float64
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("./templates/base.html", "./templates/length.html")
+func parseTemplates(templatePath string, r *http.Request) (formResult, *template.Template, error) {
+	t, err := template.ParseFiles("./templates/base.html", templatePath)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return formResult{}, t, err
 	}
 
 	rawLength := r.FormValue("length")
 	from := r.FormValue("from")
 	to := r.FormValue("to")
 
-	if rawLength == "" {
-		w.Header().Add("Content-Type", "text/html")
-		err = t.Execute(w, nil)
-		return
+	data := formResult{
+		Length: rawLength,
+		From:   from,
+		To:     to,
 	}
+	return data, t, nil
+}
 
-	result, err := convert.ConvertLength(rawLength, from, to)
+func lengthHandler(w http.ResponseWriter, r *http.Request) {
+	data, t, err := parseTemplates("./templates/length.html", r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	data := formResult{
-		Length: rawLength,
-		From:   from,
-		To:     to,
-		Result: result,
+	if data.Length == "" {
+		w.Header().Add("Content-Type", "text/html")
+		err = t.Execute(w, nil)
+		return
 	}
 
+	result, err := convert.ConvertLength(data.Length, data.From, data.To)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data.Result = result
+	w.Header().Add("Content-Type", "text/html")
+	err = t.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func weightHandler(w http.ResponseWriter, r *http.Request) {
+	data, t, err := parseTemplates("./templates/weight.html", r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if data.Length == "" {
+		w.Header().Add("Content-Type", "text/html")
+		err = t.Execute(w, nil)
+		return
+	}
+
+	result, err := convert.ConvertWeight(data.Length, data.From, data.To)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data.Result = result
+	w.Header().Add("Content-Type", "text/html")
+	err = t.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func temperatureHandler(w http.ResponseWriter, r *http.Request) {
+	data, t, err := parseTemplates("./templates/temperature.html", r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if data.Length == "" {
+		w.Header().Add("Content-Type", "text/html")
+		err = t.Execute(w, nil)
+		return
+	}
+
+	result, err := convert.ConvertTemperature(data.Length, data.From, data.To)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	data.Result = result
 	w.Header().Add("Content-Type", "text/html")
 	err = t.Execute(w, data)
 	if err != nil {
@@ -53,6 +115,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", lengthHandler)
+	http.HandleFunc("/length", lengthHandler)
+	http.HandleFunc("/weight", weightHandler)
+	http.HandleFunc("/temperature", temperatureHandler)
 	http.ListenAndServe(":8080", nil)
 }

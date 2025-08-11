@@ -1,30 +1,29 @@
 {{ define "content" }}
 <form target="_self">
-  <label for="weight">Enter the weight to convert</label>
-  <input type="number" name="weight" value="0" /> <br />
+  <label for="length">Enter the weight to convert</label>
+  <input type="number" name="length" value="0" /> <br />
 
   <label for="from">Unit to convert from</label>
   <select name="from" id="from">
-    <option value="milimeter">milimeter</option>
-    <option value="centimeter">centimeter</option>
-    <option value="meter">meter</option>
-    <option value="kilometer">kilometer</option>
-    <option value="inch">inch</option>
-    <option value="foot">yard</option>
-    <option value="mile">mile</option>
+    <option value="milligram">milligram</option>
+    <option value="gram">gram</option>
+    <option value="kilogram">kilogram</option>
+    <option value="ounce">ounce</option>
+    <option value="pound">pound</option>
   </select>
 
   <label for="to">Unit to convert to</label>
   <select name="to" id="to">
-    <option value="milimeter">milimeter</option>
-    <option value="centimeter">centimeter</option>
-    <option value="meter">meter</option>
-    <option value="kilometer">kilometer</option>
-    <option value="inch">inch</option>
-    <option value="foot">yard</option>
-    <option value="mile">mile</option>
+    <option value="milligram">milligram</option>
+    <option value="gram">gram</option>
+    <option value="kilogram">kilogram</option>
+    <option value="ounce">ounce</option>
+    <option value="pound">pound</option>
   </select>
 
   <input type="submit" name="submit" value="Convert" />
 </form>
-{{ end }}
+{{ if .Length }}
+<hr />
+<p>{{ .Result }} {{ .To }}</p>
+{{end}} {{ end }}
